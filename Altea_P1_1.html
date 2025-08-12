@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Proposal: Automated End-of-Work Reports</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Slate & Amber -->
+    <!-- Application Structure Plan: The SPA is designed as a decision-making tool for a business stakeholder. It follows a narrative flow: 1. Hero section to state the value proposition immediately. 2. "The Challenge" section to establish the problem context. 3. "The Solution" section to introduce the proposed system at a high level. 4. An interactive "Solution Comparison" section with a chart and tabs. 5. A new interactive "ROI Calculator" to quantify the value proposition. 6. A "Recommendation" section to provide a clear path forward. This structure guides the user from understanding the problem to exploring solutions, quantifying the benefits, and finally receiving a concrete recommendation. -->
+    <!-- Visualization & Content Choices: Report Info: Time Savings -> Goal: Compare efficiency gains -> Viz: Grouped Bar Chart (Chart.js). Report Info: Workflows -> Goal: Illustrate user steps -> Viz: Styled HTML/CSS Flexbox diagram. Report Info: ROI Calculation -> Goal: Quantify savings -> Viz: Interactive sliders and dynamic text output -> Interaction: User adjusts report volume and hourly cost to see real-time updates on time/money saved -> Justification: This makes the abstract benefit of "time saved" concrete and directly relatable to business costs, significantly strengthening the proposal. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        .flow-step {
+            transition: all 0.3s ease-in-out;
+        }
+        .flow-step:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .tab-button.active {
+            background-color: #1e293b; /* slate-800 */
+            color: white;
+        }
+        .tab-button {
+            transition: all 0.2s ease-in-out;
+        }
+        .content-card {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+        .hidden-card {
+            opacity: 0;
+            transform: translateY(20px);
+            position: absolute;
+            pointer-events: none;
+        }
+        /* Custom slider styles */
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #cbd5e1; /* slate-300 */
+            border-radius: 5px;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+        }
+        input[type=range]:hover {
+            opacity: 1;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #1e293b; /* slate-800 */
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        input[type=range]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #1e293b; /* slate-800 */
+            cursor: pointer;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="text-slate-700">
+
+    <main class="container mx-auto px-4 py-8 md:py-16">
+
+        <!-- Header Section -->
+        <header class="text-center mb-16 md:mb-24">
+             <img
+                src="https://www.altea-co.it/wp-content/uploads/2021/01/altea-visual.png"
+                alt="Altea Company Logo"
+                class="mx-auto mb-6 w-32 md:w-48"
+                loading="lazy"
+                decoding="async"
+             />
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">Automated End-of-Work Reports</h1>
+            <p class="text-xl md:text-2xl text-amber-600 font-medium">Transforming a 15-minute task into a 1-2 minute process.</p>
+        </header>
+
+        <!-- The Challenge Section -->
+        <section id="challenge" class="mb-16 md:mb-24 max-w-4xl mx-auto">
+            <h2 class="text-3xl font-bold text-slate-800 text-center mb-2">The Challenge</h2>
+            <p class="text-lg text-center text-slate-600 mb-12">The current process for creating after-work reports is manual, slow, and prone to errors. This section outlines the key pain points we aim to solve.</p>
+            <div class="grid md:grid-cols-3 gap-8 text-center">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <div class="text-4xl mb-4">📸</div>
+                    <h3 class="text-lg font-semibold text-slate-900 mb-2">Manual Photo Gathering</h3>
+                    <p class="text-slate-600">Time is wasted collecting and organizing 'before' and 'after' photos from different devices and sources.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <div class="text-4xl mb-4">✍️</div>
+                    <h3 class="text-lg font-semibold text-slate-900 mb-2">Repetitive Data Entry</h3>
+                    <p class="text-slate-600">Job summaries are written from scratch for every report, leading to repetitive work and potential inconsistencies.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <div class="text-4xl mb-4">📋</div>
+                    <h3 class="text-lg font-semibold text-slate-900 mb-2">Inconsistent Formatting</h3>
+                    <p class="text-slate-600">Without a standard template, reports can vary in quality and branding, risking a loss of crucial comparison data.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Solution Section -->
+        <section id="solution" class="mb-16 md:mb-24 bg-slate-800 text-white rounded-2xl p-8 md:p-12">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl font-bold mb-2">The Solution: A Smart Report Generator</h2>
+                <p class="text-lg text-slate-300 mb-12">We propose a web application that automates report generation, ensuring speed, consistency, and professionalism. The final output is a polished, branded PDF ready for clients.</p>
+                <div class="bg-white/10 p-6 rounded-xl shadow-lg border border-white/20">
+                    <h4 class="font-semibold text-xl mb-4 text-white">Standardized PDF Output</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-slate-200">
+                        <div class="bg-slate-700 p-4 rounded-lg"><strong>Cover Page</strong><span class="block text-slate-300 mt-1">Client, Site, Dates</span></div>
+                        <div class="bg-slate-700 p-4 rounded-lg"><strong>Photo Grid</strong><span class="block text-slate-300 mt-1">Before & After</span></div>
+                        <div class="bg-slate-700 p-4 rounded-lg"><strong>Work Summary</strong><span class="block text-slate-300 mt-1">From Job Data</span></div>
+                        <div class="bg-slate-700 p-4 rounded-lg"><strong>Signature Page</strong><span class="block text-slate-300 mt-1">Optional Sign-off</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Solution Comparison Section -->
+        <section id="comparison" class="mb-16 md:mb-24">
+            <div class="text-center max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Solution Comparison</h2>
+                <p class="text-lg text-slate-600 mb-12">To help you decide, here is a side-by-side comparison of the two proposed solutions. The chart below visualizes the dramatic time savings each option provides, and you can switch between tabs to explore their unique workflows and features.</p>
+            </div>
+
+            <div class="chart-container mb-12">
+                <canvas id="timeSavedChart"></canvas>
+            </div>
+            
+            <div class="flex justify-center mb-8">
+                <div class="inline-flex rounded-lg shadow-sm bg-slate-200 p-1">
+                    <button id="btn-option-a" class="tab-button active px-4 py-2 text-sm font-medium rounded-md">Option A: Upload-Based</button>
+                    <button id="btn-option-b" class="tab-button px-4 py-2 text-sm font-medium rounded-md">Option B: Folder-Based</button>
+                </div>
+            </div>
+
+            <div class="relative max-w-5xl mx-auto">
+                <!-- Option A Content -->
+                <div id="content-option-a" class="content-card">
+                     <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-white p-6 rounded-xl border border-slate-200">
+                            <h4 class="font-bold text-xl text-slate-900 mb-4">Workflow: Upload-Based</h4>
+                            <div class="space-y-3">
+                                <div class="flow-step flex items-center bg-slate-50 p-3 rounded-lg"><span class="bg-slate-800 text-white rounded-full h-6 w-6 text-sm flex items-center justify-center mr-3">1</span><span>User opens webapp in any browser.</span></div>
+                                <div class="flow-step flex items-center bg-slate-50 p-3 rounded-lg"><span class="bg-slate-800 text-white rounded-full h-6 w-6 text-sm flex items-center justify-center mr-3">2</span><span>Drags &amp; drops photos and notes.</span></div>
+                                <div class="flow-step flex items-center bg-slate-50 p-3 rounded-lg"><span class="bg-slate-800 text-white rounded-full h-6 w-6 text-sm flex items-center justify-center mr-3">3</span><span>Clicks "Generate Report".</span></div>
+                                <div class="flow-step flex items-center bg-slate-50 p-3 rounded-lg"><span class="bg-amber-600 text-white rounded-full h-6 w-6 text-sm flex items-center justify-center mr-3">✓</span><span>PDF is instantly downloadable.</span></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl border border-slate-200">
+                            <h4 class="font-bold text-xl text-slate-900 mb-4">Pros &amp; Cons</h4>
+                            <div class="space-y-2">
+                                <p class="flex items-start"><span class="text-green-500 mr-2 mt-1">✔</span> Works anywhere (remote, mobile, office).</p>
+                                <p class="flex items-start"><span class="text-green-500 mr-2 mt-1">✔</span> No dependency on company file structure.</p>
+                                <p class="flex items-start"><span class="text-red-500 mr-2 mt-1">✖</span> Requires manual upload for every report.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Option B Content -->
+                <div id="content-option-b" class="content-card hidden-card">
+                     <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-white p-6 rounded-xl border border-slate-200">
+                            <h4 class="font-bold text-xl text-slate-900 mb-4">Workflow: Folder-Based</h4>
+                            <div class="space-y-3">
+                                <div class="flow-step flex items-center bg-slate-50 p-3 rounded-lg"><span class="bg-slate-800 text-white rounded-full h-6 w-6 text-sm flex items-center justify-center mr-3">1</span><span>User saves files to a predefined job folder.</span></div>
+                                <div class="flow-step flex items-center bg-slate-50 p-3 rounded-lg"><span class="bg-slate-800 text-white rounded-full h-6 w-6 text-sm flex items-center justify-center mr-3">2</span><span>Webapp auto-detects files or user enters Job ID.</span></div>
+                                <div class="flow-step flex items-center bg-slate-50 p-3 rounded-lg"><span class="bg-slate-800 text-white rounded-full h-6 w-6 text-sm flex items-center justify-center mr-3">3</span><span>Report is generated with one click (or automatically).</span></div>
+                                <div class="flow-step flex items-center bg-slate-50 p-3 rounded-lg"><span class="bg-amber-600 text-white rounded-full h-6 w-6 text-sm flex items-center justify-center mr-3">✓</span><span>PDF is saved directly to the shared drive.</span></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl border border-slate-200">
+                            <h4 class="font-bold text-xl text-slate-900 mb-4">Pros &amp; Cons</h4>
+                            <div class="space-y-2">
+                                <p class="flex items-start"><span class="text-green-500 mr-2 mt-1">✔</span> Fastest possible workflow; no uploads needed.</p>
+                                <p class="flex items-start"><span class="text-green-500 mr-2 mt-1">✔</span> Zero data duplication; uses existing files.</p>
+                                <p class="flex items-start"><span class="text-red-500 mr-2 mt-1">✖</span> Depends on a consistent folder structure.</p>
+                                <p class="flex items-start"><span class="text-red-500 mr-2 mt-1">✖</span> Requires app access to the shared drive.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ROI Calculator Section -->
+        <section id="roi-calculator" class="mb-16 md:mb-24 bg-white rounded-2xl p-8 md:p-12 border border-slate-200">
+            <div class="text-center max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Return on Investment Calculator</h2>
+                <p class="text-lg text-slate-600 mb-12">Use the sliders to estimate the annual time and cost savings for your team. See how quickly this investment pays for itself.</p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-8 items-center mb-12">
+                <div>
+                    <label for="reports-slider" class="block font-medium text-slate-800 mb-2">Number of Reports per Year</label>
+                    <input id="reports-slider" type="range" min="50" max="2000" value="500" step="10">
+                    <div class="text-center text-slate-800 font-semibold text-lg mt-2"><span id="reports-output">500</span> reports/year</div>
+                </div>
+                <div>
+                    <label for="hourly-rate-input" class="block font-medium text-slate-800 mb-2">Average Hourly Cost (€)</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">€</span>
+                        <input id="hourly-rate-input" type="number" value="35" class="w-full pl-7 pr-3 py-2 border border-slate-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-8 text-center">
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                    <h3 class="font-bold text-xl text-slate-900 mb-4">Savings with Option A</h3>
+                    <p class="text-2xl font-semibold text-slate-800 mb-1"><span id="time-saved-a">0</span> hours</p>
+                    <p class="text-slate-600 mb-4">Annual Time Saved</p>
+                    <p class="text-4xl font-bold text-amber-600">€<span id="roi-a">0</span></p>
+                    <p class="text-slate-600">Annual Cost Savings</p>
+                </div>
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                    <h3 class="font-bold text-xl text-slate-900 mb-4">Savings with Option B</h3>
+                    <p class="text-2xl font-semibold text-slate-800 mb-1"><span id="time-saved-b">0</span> hours</p>
+                    <p class="text-slate-600 mb-4">Annual Time Saved</p>
+                    <p class="text-4xl font-bold text-amber-600">€<span id="roi-b">0</span></p>
+                    <p class="text-slate-600">Annual Cost Savings</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Recommendation Section -->
+        <section id="recommendation" class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2">Recommendation &amp; Next Steps</h2>
+            <p class="text-lg text-slate-600 mb-8">To deliver the fastest, most impactful win, we recommend a path based on your current workflow, with the ultimate goal of a powerful hybrid solution.</p>
+            <div class="grid md:grid-cols-2 gap-8 text-left">
+                <div class="bg-white p-6 rounded-xl border-2 border-amber-500 shadow-lg">
+                    <h4 class="font-semibold text-slate-900 text-lg mb-2">If files are scattered...</h4>
+                    <p class="text-slate-600">Start with <strong>Option A (Upload-Based)</strong>. Its flexibility provides an immediate solution for all team members.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-200">
+                     <h4 class="font-semibold text-slate-900 text-lg mb-2">If a folder structure exists...</h4>
+                    <p class="text-slate-600">Start with <strong>Option B (Folder-Based)</strong>. It offers the maximum time savings and integrates seamlessly.</p>
+                </div>
+            </div>
+            <div class="mt-8 bg-slate-800 text-white p-6 rounded-xl">
+                <h4 class="font-bold text-lg">Future Goal: A Hybrid System</h4>
+                <p class="text-slate-300">Both options can evolve into a single, intelligent application that offers uploads when working remotely and auto-detects from folders when on the company network.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chartCtx = document.getElementById('timeSavedChart').getContext('2d');
+            const btnOptionA = document.getElementById('btn-option-a');
+            const btnOptionB = document.getElementById('btn-option-b');
+            const contentOptionA = document.getElementById('content-option-a');
+            const contentOptionB = document.getElementById('content-option-b');
+
+            const reportsSlider = document.getElementById('reports-slider');
+            const reportsOutput = document.getElementById('reports-output');
+            const hourlyRateInput = document.getElementById('hourly-rate-input');
+            const timeSavedA = document.getElementById('time-saved-a');
+            const roiA = document.getElementById('roi-a');
+            const timeSavedB = document.getElementById('time-saved-b');
+            const roiB = document.getElementById('roi-b');
+
+            const MANUAL_TIME = 15; // minutes
+            const OPTION_A_TIME = 2; // minutes
+            const OPTION_B_TIME = 1; // minutes
+
+            const chartData = {
+                labels: ['Current Process', 'Automated Process'],
+                datasets: [
+                    {
+                        label: 'Option A: Upload-Based (minutes)',
+                        data: [MANUAL_TIME, OPTION_A_TIME],
+                        backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 1,
+                        barPercentage: 0.6,
+                    },
+                    {
+                        label: 'Option B: Folder-Based (minutes)',
+                        data: [MANUAL_TIME, OPTION_B_TIME],
+                        backgroundColor: 'rgba(245, 158, 11, 0.6)',
+                        borderColor: 'rgba(245, 158, 11, 1)',
+                        borderWidth: 1,
+                        barPercentage: 0.6,
+                    }
+                ]
+            };
+            
+            const timeSavedChart = new Chart(chartCtx, {
+                type: 'bar',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: 'Estimated Time Per Report (in minutes)', font: { size: 16 }, color: '#1e293b', padding: { bottom: 20 } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) { label += ': '; }
+                                    if (context.parsed.y !== null) { label += context.parsed.y + ' min'; }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'Minutes', color: '#475569' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            function switchTab(selectedOption) {
+                if (selectedOption === 'A') {
+                    btnOptionA.classList.add('active');
+                    btnOptionB.classList.remove('active');
+                    contentOptionA.classList.remove('hidden-card');
+                    contentOptionB.classList.add('hidden-card');
+                } else {
+                    btnOptionA.classList.remove('active');
+                    btnOptionB.classList.add('active');
+                    contentOptionA.classList.add('hidden-card');
+                    contentOptionB.classList.remove('hidden-card');
+                }
+            }
+
+            function updateROI() {
+                const numReports = parseInt(reportsSlider.value, 10);
+                const hourlyRate = parseFloat(hourlyRateInput.value) || 0;
+
+                reportsOutput.textContent = numReports.toLocaleString('it-IT');
+
+                const timeSavedMinutesA = (MANUAL_TIME - OPTION_A_TIME) * numReports;
+                const timeSavedHoursA = timeSavedMinutesA / 60;
+                const costSavedA = timeSavedHoursA * hourlyRate;
+
+                const timeSavedMinutesB = (MANUAL_TIME - OPTION_B_TIME) * numReports;
+                const timeSavedHoursB = timeSavedMinutesB / 60;
+                const costSavedB = timeSavedHoursB * hourlyRate;
+
+                timeSavedA.textContent = timeSavedHoursA.toLocaleString('it-IT', { maximumFractionDigits: 0 });
+                roiA.textContent = costSavedA.toLocaleString('it-IT', { maximumFractionDigits: 0 });
+                
+                timeSavedB.textContent = timeSavedHoursB.toLocaleString('it-IT', { maximumFractionDigits: 0 });
+                roiB.textContent = costSavedB.toLocaleString('it-IT', { maximumFractionDigits: 0 });
+            }
+
+            btnOptionA.addEventListener('click', () => switchTab('A'));
+            btnOptionB.addEventListener('click', () => switchTab('B'));
+            reportsSlider.addEventListener('input', updateROI);
+            hourlyRateInput.addEventListener('input', updateROI);
+
+            // Initial state
+            switchTab('A');
+            updateROI();
+        });
+    </script>
+
+</body>
+</html>

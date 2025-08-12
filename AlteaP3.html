@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Proposal: Odoo → BigQuery → Looker BI Pipeline</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Slate & Amber -->
+    <!-- Application Structure Plan: The SPA explains a foundational project. The flow is: 1. Hero section (Goal). 2. Challenge (Problem). 3. Solution (What we'll do). 4. Data Flow (How it works visually). 5. Implementation & Costs (The investment). 6. ROI Analysis (The financial return). 7. Why This Matters (The strategic value). This structure logically guides a stakeholder from the problem to the solution and its clear financial and strategic justification. -->
+    <!-- Visualization & Content Choices: Report Info: Data Flow -> Viz: HTML/CSS Flexbox diagram. Justification: Best way to show architecture. Report Info: Monthly Costs -> Viz: Doughnut Chart. Justification: Simple visual for cost breakdown. Report Info: ROI Levers -> Viz: Static info cards. Justification: Clearly presents the four distinct financial benefits and their assumptions. Report Info: Strategic Impact -> Viz: Styled text sections. Justification: Best for explaining conceptual benefits. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .flow-step {
+            transition: all 0.3s ease-in-out;
+            border: 1px solid #e2e8f0; /* slate-200 */
+        }
+        .flow-step:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border-color: #f59e0b; /* amber-500 */
+        }
+        .flow-arrow {
+            color: #94a3b8; /* slate-400 */
+        }
+        .cost-chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+        }
+    </style>
+</head>
+<body class="text-slate-700">
+
+    <main class="container mx-auto px-4 py-8 md:py-16">
+
+        <!-- Header Section -->
+        <header class="text-center mb-16 md:mb-24">
+            <img
+                src="https://www.altea-co.it/wp-content/uploads/2021/01/altea-visual.png"
+                alt="Altea Company Logo"
+                class="mx-auto mb-6 w-32 md:w-48"
+                loading="lazy"
+                decoding="async"
+            />
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">BI & Analytics Pipeline</h1>
+            <p class="text-xl md:text-2xl text-amber-600 font-medium">Creating a Single Source of Truth for Your Data.</p>
+        </header>
+
+        <!-- The Challenge Section -->
+        <section id="challenge" class="mb-16 md:mb-24 max-w-5xl mx-auto">
+            <h2 class="text-3xl font-bold text-slate-800 text-center mb-2">The Challenge: Fragmented Data, Limited Insights</h2>
+            <p class="text-lg text-center text-slate-600 mb-12">Answering key business questions is difficult and time-consuming because our data is locked in different systems and formats.</p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200"><div class="text-4xl mb-4">🧩</div><h3 class="text-lg font-semibold text-slate-900 mb-2">Scattered Data</h3><p class="text-slate-600">Data is siloed across Sales, Projects, Accounting, and Inventory modules in Odoo.</p></div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200"><div class="text-4xl mb-4">🚧</div><h3 class="text-lg font-semibold text-slate-900 mb-2">Inconsistent Usage</h3><p class="text-slate-600">Inconsistent field use leads to unreliable reports and confusion during analysis.</p></div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200"><div class="text-4xl mb-4">📊</div><h3 class="text-lg font-semibold text-slate-900 mb-2">Limited Dashboards</h3><p class="text-slate-600">Odoo's built-in reports are rigid and cannot combine data from different sources.</p></div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200"><div class="text-4xl mb-4">❓</div><h3 class="text-lg font-semibold text-slate-900 mb-2">No Single Truth</h3><p class="text-slate-600">Conflicting metrics from different sources erode trust in the data.</p></div>
+            </div>
+        </section>
+
+        <!-- The Solution Section -->
+        <section id="solution" class="mb-16 md:mb-24 bg-slate-800 text-white rounded-2xl p-8 md:p-12">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl font-bold mb-2">The Solution: A Centralized Analytics Pipeline</h2>
+                <p class="text-lg text-slate-300 mb-12">We will build a modern data pipeline to consolidate, clean, and serve your data, making it available for powerful reporting and automation.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+                    <div class="bg-white/10 p-6 rounded-xl"><h4 class="font-semibold text-xl mb-2 text-white">1. Extract</h4><p class="text-slate-300">Reliably pull data from all Odoo modules on a schedule without impacting performance.</p></div>
+                    <div class="bg-white/10 p-6 rounded-xl"><h4 class="font-semibold text-xl mb-2 text-white">2. Model</h4><p class="text-slate-300">Clean and transform raw data into business-ready tables for consistent metrics.</p></div>
+                    <div class="bg-white/10 p-6 rounded-xl"><h4 class="font-semibold text-xl mb-2 text-white">3. Visualize</h4><p class="text-slate-300">Connect to Looker to create interactive dashboards for self-service analytics.</p></div>
+                    <div class="bg-white/10 p-6 rounded-xl"><h4 class="font-semibold text-xl mb-2 text-white">4. Enable</h4><p class="text-slate-300">Provide a single data source for our other web applications (Reports & Pricing).</p></div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Data Flow Diagram -->
+        <section id="data-flow" class="mb-16 md:mb-24 max-w-6xl mx-auto">
+             <div class="text-center">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Infrastructure & Data Flow</h2>
+                <p class="text-lg text-slate-600 mb-12">The architecture is designed for reliability and performance, using a modern, scalable tech stack.</p>
+            </div>
+            <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-2">
+                <div class="flow-step bg-white p-4 rounded-lg text-center w-48"><p class="font-semibold text-slate-900">Odoo Enterprise</p><p class="text-sm text-slate-600">Source of Record</p></div>
+                <div class="flow-arrow text-3xl font-light transform rotate-90 md:rotate-0">→</div>
+                <div class="flow-step bg-white p-4 rounded-lg text-center w-48"><p class="font-semibold text-slate-900">CData Sync</p><p class="text-sm text-slate-600">Scheduled Extraction</p></div>
+                <div class="flow-arrow text-3xl font-light transform rotate-90 md:rotate-0">→</div>
+                <div class="flow-step bg-white p-4 rounded-lg text-center w-48"><p class="font-semibold text-slate-900">Google BigQuery</p><p class="text-sm text-slate-600">Centralized Storage</p></div>
+                <div class="flow-arrow text-3xl font-light transform rotate-90 md:rotate-0">→</div>
+                <div class="flow-step bg-white p-4 rounded-lg text-center w-48"><p class="font-semibold text-slate-900">SQL Modeling</p><p class="text-sm text-slate-600">Business Logic</p></div>
+                <div class="flow-arrow text-3xl font-light transform rotate-90 md:rotate-0">→</div>
+                <div class="flow-step bg-slate-800 text-white p-4 rounded-lg text-center w-48"><p class="font-semibold">Data Consumers</p><p class="text-sm text-slate-300">Looker & Webapps</p></div>
+            </div>
+        </section>
+
+        <!-- Implementation & Costs -->
+        <section id="implementation" class="mb-16 md:mb-24 max-w-5xl mx-auto">
+             <div class="text-center">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Implementation & Costs</h2>
+                <p class="text-lg text-slate-600 mb-12">We will deliver value incrementally with a clear, phased approach and transparent, predictable costs.</p>
+            </div>
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h4 class="text-xl font-semibold text-slate-900 mb-4">Phased Implementation Plan</h4>
+                    <ol class="list-decimal list-inside space-y-4">
+                        <li class="p-4 bg-white rounded-lg border border-slate-200"><strong class="text-slate-800">Phase 0 (0.5 week):</strong> Setup the core data pipeline from Odoo to BigQuery.<span class="block text-sm text-slate-600 mt-1">Deliverable: Raw data flowing into the warehouse.</span></li>
+                        <li class="p-4 bg-white rounded-lg border border-slate-200"><strong class="text-slate-800">Phase 1 & 2 (2.5 weeks):</strong> Deliver the automated Reports and Pricing web applications.<span class="block text-sm text-slate-600 mt-1">Deliverable: Working web applications using the new data source.</span></li>
+                        <li class="p-4 bg-white rounded-lg border border-slate-200"><strong class="text-slate-800">Phase 3 (1 week):</strong> Build and deploy core business dashboards and a pipeline monitoring dashboard.<span class="block text-sm text-slate-600 mt-1">Deliverables: Live dashboards for Sales, Jobs, Finance, and a technical dashboard to monitor data flow health.</span></li>
+                    </ol>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-200">
+                    <h4 class="text-xl font-semibold text-slate-900 mb-4 text-center">Estimated Monthly Cost Breakdown</h4>
+                    <div class="cost-chart-container"><canvas id="costChart"></canvas></div>
+                    <p class="text-center mt-4 text-slate-600">Total Estimated Cost: <strong class="text-2xl text-slate-800">~€126 / month</strong></p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- ROI Section -->
+        <section id="roi" class="mb-16 md:mb-24 bg-white rounded-2xl p-8 md:p-12 border border-slate-200">
+            <div class="text-center max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">The Financial Impact: A Clear ROI</h2>
+                <p class="text-lg text-slate-600 mb-12">This foundational project delivers value across the entire business by saving time, improving decisions, and enabling future automation. The return on investment is both significant and rapid.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                    <h4 class="font-semibold text-slate-900 mb-2">Manual Reporting Time Saved</h4>
+                    <p class="text-3xl font-bold text-green-600 my-2">€18,720</p>
+                    <p class="text-sm text-slate-600">Frees up ~450 hours/year for higher-value work by automating dashboard creation.</p>
+                </div>
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                    <h4 class="font-semibold text-slate-900 mb-2">Faster Decisions</h4>
+                    <p class="text-3xl font-bold text-green-600 my-2">€10,000</p>
+                    <p class="text-sm text-slate-600">A conservative 0.5% revenue lift from real-time KPIs on profitability and job costs.</p>
+                </div>
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                    <h4 class="font-semibold text-slate-900 mb-2">Operational Efficiency</h4>
+                    <p class="text-3xl font-bold text-green-600 my-2">€6,000</p>
+                    <p class="text-sm text-slate-600">Avoids costly errors from misaligned data, such as billing mistakes or misquoted jobs.</p>
+                </div>
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                    <h4 class="font-semibold text-slate-900 mb-2">Foundation for AI</h4>
+                    <p class="text-3xl font-bold text-green-600 my-2">€3,000</p>
+                    <p class="text-sm text-slate-600">Reduces development costs for future projects by providing a clean, centralized dataset.</p>
+                </div>
+            </div>
+            <div class="mt-12 bg-slate-800 text-white p-8 rounded-2xl text-center max-w-3xl mx-auto">
+                <p class="text-xl text-amber-400 font-semibold">Total Estimated Annual Benefit</p>
+                <p class="text-6xl font-bold my-4">€37,720</p>
+                <div class="flex justify-center gap-8 text-slate-300">
+                    <div>Payback Period: <strong class="text-white">&lt; 3 Weeks</strong></div>
+                    <div>Annual ROI: <strong class="text-white">~2,400%</strong></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why This Matters Section -->
+        <section id="why-it-matters" class="max-w-5xl mx-auto">
+            <h2 class="text-3xl font-bold text-slate-800 text-center mb-12">Why This Pipeline is Critical for Altea’s Future</h2>
+            <div class="space-y-8">
+                <div class="p-6 bg-white rounded-lg border border-slate-200">
+                    <h3 class="text-xl font-semibold text-slate-900 mb-3">1. The Strategic Impact of Data Centralization</h3>
+                    <p class="text-slate-600">Instead of pulling partial numbers from multiple Odoo modules, every KPI will come from one governed, unified dataset. This eliminates "spreadsheet chaos" and ensures everyone is working from the same figures, with the same definitions. With data refreshed as often as every 15 minutes, decisions are always based on up-to-date information.</p>
+                </div>
+                <div class="p-6 bg-white rounded-lg border border-slate-200">
+                    <h3 class="text-xl font-semibold text-slate-900 mb-3">2. Bypassing Odoo Online's Limitations</h3>
+                    <p class="text-slate-600">Odoo Online does not allow direct database access for heavy reporting. Any attempt to do so would be slow and affect live operations. This pipeline offloads all reporting queries to BigQuery, keeping Odoo fast and responsive. It effectively unlocks your data from Odoo's closed system into a warehouse you control.</p>
+                </div>
+                 <div class="p-6 bg-white rounded-lg border border-slate-200">
+                    <h3 class="text-xl font-semibold text-slate-900 mb-3">3. A Foundation for Future Advantage</h3>
+                    <p class="text-slate-600">This pipeline is not just a reporting tool; it's a long-term asset. Once built, it can integrate other systems (CRMs, supplier portals), support predictive models like demand forecasting, and even power client-facing dashboards, creating a unique differentiator in Altea’s market.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const costCtx = document.getElementById('costChart').getContext('2d');
+
+            new Chart(costCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['CData Sync', 'Flask Hosting & GCS', 'BigQuery'],
+                    datasets: [{
+                        label: 'Monthly Cost (€)',
+                        data: [110, 15, 1],
+                        backgroundColor: ['rgba(59, 130, 246, 0.8)','rgba(245, 158, 11, 0.8)','rgba(16, 185, 129, 0.8)'],
+                        borderColor: '#f8fafc',
+                        borderWidth: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#1e293b', padding: 20, font: { size: 14 }}},
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) { label += ': '; }
+                                    if (context.parsed !== null) { label += '€' + context.parsed; }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

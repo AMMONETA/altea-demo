@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Altea | Report Generator – Mockup</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body{font-family:'Inter',sans-serif}
+    .glass{backdrop-filter: blur(10px);}
+    .dropzone.dragover{border-color: rgb(245 158 11); background: rgb(254 243 199);}
+    .tab-active{background: rgb(30 41 59); color: white}
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+  <!-- Top Nav / Branding -->
+  <header class="sticky top-0 z-40 bg-white/80 glass border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="https://www.altea-co.it/wp-content/uploads/2021/01/altea-visual.png" alt="Altea logo" class="h-8 w-auto"/>
+        <span class="text-sm text-slate-500 hidden md:inline">Project Proposal • Automated End‑of‑Work Reports</span>
+      </div>
+      <div class="flex items-center gap-2 text-sm">
+        <span class="hidden sm:inline text-slate-500">Mockup</span>
+        <span class="px-2 py-1 rounded bg-amber-100 text-amber-700">MVP</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="bg-gradient-to-b from-white to-slate-100 border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 py-10 md:py-14 grid md:grid-cols-2 gap-8 items-center">
+      <div>
+        <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900">Automated End‑of‑Work Report Generator</h1>
+        <p class="mt-3 text-lg text-slate-600">Turn a <span class="font-semibold">15‑minute</span> manual task into a <span class="font-semibold">1–2 minute</span> automated flow. Upload photos or point to a job folder; get a branded PDF instantly.</p>
+        <div class="mt-6 inline-flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-2 shadow-sm">
+          <span class="text-slate-500 text-sm">Mode:</span>
+          <button id="tab-upload" class="px-3 py-1.5 rounded-md tab-active text-sm font-medium">Option A • Upload</button>
+          <button id="tab-folder" class="px-3 py-1.5 rounded-md text-sm font-medium">Option B • Folder</button>
+        </div>
+      </div>
+      <!-- Right: KPI card -->
+      <div class="">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-slate-500">Est. time per report</p>
+              <p class="text-3xl font-bold mt-1"><span id="kpi-time">2</span> min</p>
+            </div>
+            <div class="text-right">
+              <p class="text-sm text-slate-500">Current</p>
+              <p class="text-xl font-semibold line-through text-slate-400">15 min</p>
+            </div>
+          </div>
+          <div class="mt-4 h-2 bg-slate-200 rounded-full overflow-hidden">
+            <div id="kpi-bar" class="h-full bg-amber-500" style="width: 13%"></div>
+          </div>
+          <p class="mt-3 text-xs text-slate-500">Option A ≈ 2 min • Option B ≈ 1 min</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Workspace -->
+  <main class="max-w-7xl mx-auto px-4 py-10">
+    <div class="grid lg:grid-cols-2 gap-8">
+      <!-- Left column: Controls -->
+      <section id="panel-upload" class="space-y-6">
+        <!-- Meta form -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+          <h2 class="text-lg font-semibold mb-4">Report Details</h2>
+          <div class="grid md:grid-cols-2 gap-4">
+            <label class="block text-sm">
+              <span class="text-slate-600">Client</span>
+              <input type="text" value="Altea" class="mt-1 w-full rounded-lg border-slate-300 focus:border-amber-500 focus:ring-amber-500"/>
+            </label>
+            <label class="block text-sm">
+              <span class="text-slate-600">Job Code</span>
+              <input type="text" placeholder="JOB_1234" class="mt-1 w-full rounded-lg border-slate-300 focus:border-amber-500 focus:ring-amber-500"/>
+            </label>
+            <label class="block text-sm md:col-span-2">
+              <span class="text-slate-600">Site Location</span>
+              <input type="text" placeholder="Via Example 42, Verona" class="mt-1 w-full rounded-lg border-slate-300 focus:border-amber-500 focus:ring-amber-500"/>
+            </label>
+            <label class="block text-sm">
+              <span class="text-slate-600">Start Date</span>
+              <input type="date" class="mt-1 w-full rounded-lg border-slate-300 focus:border-amber-500 focus:ring-amber-500"/>
+            </label>
+            <label class="block text-sm">
+              <span class="text-slate-600">End Date</span>
+              <input type="date" class="mt-1 w-full rounded-lg border-slate-300 focus:border-amber-500 focus:ring-amber-500"/>
+            </label>
+          </div>
+        </div>
+
+        <!-- Upload dropzone -->
+        <div class="bg-white rounded-2xl border-2 border-dashed border-slate-300 p-6 lg:p-8 shadow-sm dropzone" id="dropzone">
+          <div class="text-center">
+            <div class="text-4xl mb-2">📎</div>
+            <h3 class="text-lg font-semibold">Drag & drop photos here</h3>
+            <p class="text-sm text-slate-500">Add <span class="font-medium">before</span> and <span class="font-medium">after</span> photos. You can also click to browse.</p>
+            <input id="fileInput" type="file" accept="image/*" multiple class="hidden" />
+            <button id="browseBtn" class="mt-4 px-4 py-2 rounded-lg bg-slate-900 text-white hover:bg-slate-700">Browse Files</button>
+          </div>
+        </div>
+
+        <!-- File list -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold">Selected Files</h3>
+            <div class="text-xs text-slate-500"><span id="count">0</span> items</div>
+          </div>
+          <div id="thumbs" class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"></div>
+        </div>
+
+        <!-- Generate -->
+        <div class="flex items-center gap-3">
+          <button id="btnGenerateA" class="px-5 py-3 rounded-xl bg-amber-500 text-white font-semibold shadow hover:bg-amber-600">Generate PDF</button>
+          <button class="px-5 py-3 rounded-xl border border-slate-300 bg-white text-slate-700 hover:bg-slate-50">Save Template</button>
+        </div>
+      </section>
+
+      <!-- Folder-based panel -->
+      <section id="panel-folder" class="space-y-6 hidden">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+          <h2 class="text-lg font-semibold mb-2">Folder-Based Automation</h2>
+          <p class="text-sm text-slate-600">Point the app to a job folder on the shared drive. Files will be detected automatically.</p>
+          <div class="mt-4 grid md:grid-cols-3 gap-3">
+            <label class="block text-sm md:col-span-2">
+              <span class="text-slate-600">Job ID</span>
+              <input id="jobIdInput" type="text" placeholder="JOB_1234" class="mt-1 w-full rounded-lg border-slate-300 focus:border-amber-500 focus:ring-amber-500"/>
+            </label>
+            <label class="block text-sm">
+              <span class="text-slate-600">Shared Path</span>
+              <input type="text" value="\\\\share\\Reports" class="mt-1 w-full rounded-lg border-slate-300 focus:border-amber-500 focus:ring-amber-500"/>
+            </label>
+          </div>
+          <div class="mt-4 flex items-center gap-3">
+            <button id="btnDetect" class="px-4 py-2 rounded-lg bg-slate-900 text-white hover:bg-slate-700">Detect Files</button>
+            <span id="detectStatus" class="text-sm text-slate-500">Waiting for Job ID…</span>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold">Detected Files</h3>
+            <div class="text-xs text-slate-500"><span id="countB">0</span> items</div>
+          </div>
+          <div id="thumbsB" class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"></div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button id="btnGenerateB" class="px-5 py-3 rounded-xl bg-amber-500 text-white font-semibold shadow hover:bg-amber-600">Generate & Save to Shared Drive</button>
+          <span class="text-sm text-slate-500">Output → \\share\\Reports\\<span id="outJob">JOB_1234</span>\\report.pdf</span>
+        </div>
+      </section>
+
+      <!-- Right column: Live Preview / PDF Mock -->
+      <aside class="space-y-6">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold">PDF Preview (Mock)</h3>
+            <button class="text-sm px-3 py-1.5 rounded-lg border border-slate-300 hover:bg-slate-50">Download</button>
+          </div>
+          <!-- Preview pages -->
+          <div class="mt-4 space-y-6">
+            <!-- Cover -->
+            <div class="border rounded-xl overflow-hidden">
+              <div class="bg-slate-900 text-white p-4 flex items-center justify-between">
+                <div>
+                  <p class="text-xs uppercase tracking-wide text-slate-300">End‑of‑Work Report</p>
+                  <p class="text-xl font-bold">Altea</p>
+                </div>
+                <img src="https://www.altea-co.it/wp-content/uploads/2021/01/altea-visual.png" class="h-8 w-auto" alt="logo"/>
+              </div>
+              <div class="p-4 grid sm:grid-cols-2 gap-3 text-sm">
+                <div>
+                  <div class="text-slate-500">Client</div>
+                  <div class="font-medium">Altea</div>
+                </div>
+                <div>
+                  <div class="text-slate-500">Job Code</div>
+                  <div class="font-medium" id="pv-job">JOB_1234</div>
+                </div>
+                <div>
+                  <div class="text-slate-500">Site</div>
+                  <div class="font-medium" id="pv-site">Via Example 42, Verona</div>
+                </div>
+                <div>
+                  <div class="text-slate-500">Dates</div>
+                  <div class="font-medium" id="pv-dates">2025‑08‑12 → 2025‑08‑12</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Photo grid -->
+            <div class="border rounded-xl overflow-hidden">
+              <div class="bg-slate-100 px-4 py-2 text-sm text-slate-600">Photo Evidence • Before / After</div>
+              <div id="pv-grid" class="p-4 grid grid-cols-2 md:grid-cols-4 gap-2">
+                <!-- Thumbs injected here -->
+              </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="border rounded-xl overflow-hidden">
+              <div class="bg-slate-100 px-4 py-2 text-sm text-slate-600">Summary of Works</div>
+              <div class="p-4 text-sm text-slate-700" id="pv-summary">
+                Removed debris, cleaned façade, replaced damaged tiles, and sealed joints. Site handed over in good condition.
+              </div>
+            </div>
+
+            <!-- Signatures -->
+            <div class="border rounded-xl overflow-hidden">
+              <div class="bg-slate-100 px-4 py-2 text-sm text-slate-600">Signatures</div>
+              <div class="p-4 grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <div class="text-slate-500">Client</div>
+                  <div class="mt-6 h-14 border-b"></div>
+                </div>
+                <div>
+                  <div class="text-slate-500">Team Lead</div>
+                  <div class="mt-6 h-14 border-b"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Help card -->
+        <div class="bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl p-4">
+          <p class="text-sm"><span class="font-semibold">Tip:</span> In production, Option B skips uploads entirely by reading from the shared job folder, giving ~1 minute turnaround.</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="border-t border-slate-200 bg-white">
+    <div class="max-w-7xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p class="text-sm text-slate-500">© <span id="year"></span> Altea • Proposal Mockup by Moneta AI</p>
+      <div class="text-sm text-slate-500">Future: Hybrid mode (auto-detect on-network, upload when remote)</div>
+    </div>
+  </footer>
+
+  <script>
+    const $ = (s, d=document) => d.querySelector(s);
+    const $$ = (s, d=document) => d.querySelectorAll(s);
+
+    // Tabs
+    const tabUpload = $('#tab-upload');
+    const tabFolder = $('#tab-folder');
+    const panelUpload = $('#panel-upload');
+    const panelFolder = $('#panel-folder');
+    const kpiTime = $('#kpi-time');
+    const kpiBar = $('#kpi-bar');
+
+    function setMode(mode){
+      const isUpload = mode === 'upload';
+      panelUpload.classList.toggle('hidden', !isUpload);
+      panelFolder.classList.toggle('hidden', isUpload);
+      tabUpload.classList.toggle('tab-active', isUpload);
+      tabFolder.classList.toggle('tab-active', !isUpload);
+      // KPI estimate
+      if(isUpload){ kpiTime.textContent = '2'; kpiBar.style.width = '13%'; }
+      else { kpiTime.textContent = '1'; kpiBar.style.width = '7%'; }
+    }
+    tabUpload.addEventListener('click', ()=> setMode('upload'));
+    tabFolder.addEventListener('click', ()=> setMode('folder'));
+
+    // Upload: dropzone
+    const dropzone = $('#dropzone');
+    const fileInput = $('#fileInput');
+    const browseBtn = $('#browseBtn');
+    const thumbs = $('#thumbs');
+    const count = $('#count');
+
+    let filesA = [];
+
+    function renderThumbs(listEl, files){
+      listEl.innerHTML = '';
+      files.slice(0,12).forEach(f => {
+        const url = URL.createObjectURL(f);
+        const card = document.createElement('div');
+        card.className = 'rounded-lg border border-slate-200 overflow-hidden bg-slate-50';
+        card.innerHTML = `<img src="${url}" alt="preview" class="w-full h-24 object-cover"/>`;
+        listEl.appendChild(card);
+      });
+    }
+
+    function handleFiles(fileList){
+      const imgs = Array.from(fileList).filter(f=>f.type.startsWith('image/'));
+      filesA = filesA.concat(imgs);
+      count.textContent = filesA.length;
+      renderThumbs(thumbs, filesA);
+      // Push to preview grid as well
+      renderPreviewGrid(filesA);
+    }
+
+    browseBtn.addEventListener('click', ()=> fileInput.click());
+    fileInput.addEventListener('change', e => handleFiles(e.target.files));
+
+    ['dragenter','dragover'].forEach(ev => dropzone.addEventListener(ev, e=>{e.preventDefault(); dropzone.classList.add('dragover')}));
+    ;['dragleave','drop'].forEach(ev => dropzone.addEventListener(ev, e=>{e.preventDefault(); dropzone.classList.remove('dragover')}));
+    dropzone.addEventListener('drop', e=> handleFiles(e.dataTransfer.files));
+
+    // Folder detect (mock)
+    const btnDetect = $('#btnDetect');
+    const detectStatus = $('#detectStatus');
+    const jobIdInput = $('#jobIdInput');
+    const outJob = $('#outJob');
+    const thumbsB = $('#thumbsB');
+    const countB = $('#countB');
+    let filesB = [];
+
+    btnDetect.addEventListener('click', ()=>{
+      const job = jobIdInput.value || 'JOB_1234';
+      outJob.textContent = job;
+      detectStatus.textContent = `Scanning \\share\\Reports\\${job} …`;
+      // Simulate detection
+      setTimeout(()=>{
+        detectStatus.textContent = 'Files detected';
+        // Create fake images (using data URLs of 1x1 pixel with different shades)
+        filesB = Array.from({length:8}).map((_,i)=>{
+          const canvas = document.createElement('canvas');
+          canvas.width=100; canvas.height=80; const ctx=canvas.getContext('2d');
+          ctx.fillStyle = `hsl(${i*35},30%,80%)`; ctx.fillRect(0,0,100,80);
+          ctx.fillStyle = '#334155'; ctx.font='12px Inter'; ctx.fillText(`Photo ${i+1}`, 10, 20);
+          return canvas.toDataURL('image/png');
+        });
+        thumbsB.innerHTML = '';
+        filesB.forEach(src=>{
+          const card = document.createElement('div');
+          card.className = 'rounded-lg border border-slate-200 overflow-hidden bg-slate-50';
+          card.innerHTML = `<img src="${src}" class="w-full h-24 object-cover" alt="detected"/>`;
+          thumbsB.appendChild(card);
+        });
+        countB.textContent = filesB.length;
+        // Also reflect in preview grid
+        renderPreviewGridDataURLs(filesB);
+      }, 700);
+    });
+
+    // Preview bindings (cover meta)
+    const pvJob = $('#pv-job');
+    const pvSite = $('#pv-site');
+    const pvDates = $('#pv-dates');
+    const metaInputs = $$('input[type="text"], input[type="date"]');
+
+    function updatePreview(){
+      const job = document.querySelector('input[placeholder="JOB_1234"]').value || 'JOB_1234';
+      const site = document.querySelector('input[placeholder="Via Example 42, Verona"]').value || 'Site';
+      const dates = Array.from($$('input[type="date"]')).map(i=>i.value).filter(Boolean).join(' → ');
+      pvJob.textContent = job; pvSite.textContent = site; pvDates.textContent = dates || '—';
+    }
+    metaInputs.forEach(i=> i.addEventListener('input', updatePreview));
+
+    // Preview grid
+    const pvGrid = $('#pv-grid');
+    function renderPreviewGrid(files){
+      pvGrid.innerHTML = '';
+      files.slice(0,8).forEach((f, idx)=>{
+        const url = URL.createObjectURL(f);
+        const frame = document.createElement('div');
+        frame.className = 'relative rounded-lg overflow-hidden border border-slate-200';
+        frame.innerHTML = `<img src="${url}" class="w-full h-24 object-cover"/><span class=\"absolute top-1 left-1 text-[10px] px-1.5 py-0.5 rounded bg-black/60 text-white\">${idx%2? 'After':'Before'}</span>`;
+        pvGrid.appendChild(frame);
+      });
+    }
+    function renderPreviewGridDataURLs(srcs){
+      pvGrid.innerHTML = '';
+      srcs.slice(0,8).forEach((src, idx)=>{
+        const frame = document.createElement('div');
+        frame.className = 'relative rounded-lg overflow-hidden border border-slate-200';
+        frame.innerHTML = `<img src="${src}" class="w-full h-24 object-cover"/><span class=\"absolute top-1 left-1 text-[10px] px-1.5 py-0.5 rounded bg-black/60 text-white\">${idx%2? 'After':'Before'}</span>`;
+        pvGrid.appendChild(frame);
+      });
+    }
+
+    // Generate buttons (mock)
+    $('#btnGenerateA').addEventListener('click', ()=>{
+      alert('PDF generated (mock) and ready to download.');
+    });
+    $('#btnGenerateB').addEventListener('click', ()=>{
+      alert('PDF generated (mock) and saved to shared drive.');
+    });
+
+    // Defaults
+    setMode('upload');
+    document.getElementById('year').textContent = new Date().getFullYear();
+    updatePreview();
+
+  </script>
+</body>
+</html>

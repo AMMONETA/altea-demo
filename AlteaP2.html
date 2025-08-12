@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Proposal: Quote Recommendation System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Slate & Amber -->
+    <!-- Application Structure Plan: The SPA's structure is a narrative for stakeholders: 1. Hero section states the value. 2. Challenge section frames the problem. 3. An interactive "Solution Demo" makes the tool's function tangible. 4. A "How It Works" diagram demystifies the backend. 5. A new interactive "ROI Calculator" section allows users to quantify the financial impact by adjusting business levers. This is the core of the business case. 6. A "Benefits & KPIs" section summarizes the value. This flow moves the user from problem, to solution, to financial justification, to final summary. -->
+    <!-- Visualization & Content Choices: Report Info: Price Estimate -> Viz: Interactive form + dynamic cards. Report Info: Modeling Process -> Viz: HTML/CSS flow diagram. Report Info: ROI Levers -> Viz: Interactive sliders and number inputs connected to dynamic calculation cards -> Interaction: User adjusts business assumptions (deal volume, value, win rate changes) and sees the three benefit levers and total annual margin impact update in real-time -> Justification: This interactive model makes the financial benefits concrete and allows stakeholders to test the model with their own assumptions, creating buy-in. Report Info: KPIs -> Viz: Static Chart.js Bar Chart. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .output-card, .driver-chip, .roi-card {
+            transition: all 0.3s ease-in-out;
+        }
+        .flow-diagram-arrow { color: #94a3b8; /* slate-400 */ }
+        .kpi-bar-chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        /* Custom slider styles */
+        input[type=range] {
+            -webkit-appearance: none; appearance: none;
+            width: 100%; height: 8px;
+            background: #cbd5e1; /* slate-300 */
+            border-radius: 5px; outline: none;
+            opacity: 0.7; transition: opacity .2s;
+        }
+        input[type=range]:hover { opacity: 1; }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 20px; height: 20px;
+            background: #1e293b; /* slate-800 */
+            cursor: pointer; border-radius: 50%;
+        }
+        input[type=range]::-moz-range-thumb {
+            width: 20px; height: 20px;
+            background: #1e293b; /* slate-800 */
+            cursor: pointer; border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="text-slate-700">
+
+    <main class="container mx-auto px-4 py-8 md:py-16">
+
+        <!-- Header Section -->
+        <header class="text-center mb-16 md:mb-24">
+            <img src="https://www.altea-co.it/wp-content/uploads/2021/01/altea-visual.png" alt="Altea Company Logo" class="mx-auto mb-6 w-32 md:w-48" loading="lazy" decoding="async" />
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">Quote Recommendation System</h1>
+            <p class="text-xl md:text-2xl text-amber-600 font-medium">Data-Driven Pricing for Consistent, Profitable Quotes.</p>
+        </header>
+
+        <!-- The Challenge Section -->
+        <section id="challenge" class="mb-16 md:mb-24 max-w-4xl mx-auto">
+            <h2 class="text-3xl font-bold text-slate-800 text-center mb-2">The Challenge: Quoting is a Bottleneck</h2>
+            <p class="text-lg text-center text-slate-600 mb-12">Our current quoting process relies heavily on individual experience, creating inconsistency, delays, and risks to our profit margins.</p>
+            <div class="grid md:grid-cols-3 gap-8 text-center">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <div class="text-4xl mb-4">🤔</div>
+                    <h3 class="text-lg font-semibold text-slate-900 mb-2">Inconsistent Pricing</h3>
+                    <p class="text-slate-600">Quotes for similar jobs can vary significantly between sales reps, depending on their personal experience.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <div class="text-4xl mb-4">⏳</div>
+                    <h3 class="text-lg font-semibold text-slate-900 mb-2">Slow Turnaround</h3>
+                    <p class="text-slate-600">There's no quick way to reference past jobs, making it difficult to validate new quotes and respond to clients quickly.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <div class="text-4xl mb-4">📉</div>
+                    <h3 class="text-lg font-semibold text-slate-900 mb-2">Opaque Margins</h3>
+                    <p class="text-slate-600">It's hard to systematically ensure that quotes align with our target margins and reflect current market conditions.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Solution Demo -->
+        <section id="solution-demo" class="mb-16 md:mb-24">
+            <div class="text-center max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">The Solution: An Interactive Pricing Engine</h2>
+                <p class="text-lg text-slate-600 mb-12">This tool empowers our sales team with instant, data-driven price recommendations. **Try adjusting the inputs below** to see how the quote changes in real-time.</p>
+            </div>
+            <div class="grid lg:grid-cols-2 gap-8 lg:gap-12">
+                <!-- Left: Inputs -->
+                <div class="bg-white p-8 rounded-2xl border border-slate-200">
+                    <h3 class="text-2xl font-bold text-slate-900 mb-6">1. Enter Job Specifications</h3>
+                    <div class="space-y-6">
+                        <div>
+                            <label for="material-select" class="block font-medium text-slate-700 mb-2">Material Type</label>
+                            <select id="material-select" class="w-full p-3 border border-slate-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                                <option value="standard">Standard Material</option>
+                                <option value="premium">Premium Material</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="terrain-select" class="block font-medium text-slate-700 mb-2">Terrain / Access</label>
+                            <select id="terrain-select" class="w-full p-3 border border-slate-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                                <option value="easy">Easy Access / Flat Terrain</option>
+                                <option value="difficult">Difficult Access / Sloped Terrain</option>
+                            </select>
+                        </div>
+                        <div>
+                             <label for="surface-area" class="block font-medium text-slate-700 mb-2">Surface Area (m²)</label>
+                            <input id="surface-area" type="number" value="100" class="w-full p-3 border border-slate-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                        </div>
+                    </div>
+                </div>
+                <!-- Right: Outputs -->
+                <div class="bg-slate-800 text-white p-8 rounded-2xl">
+                    <h3 class="text-2xl font-bold mb-6">2. Review Recommended Quote</h3>
+                    <div class="output-card bg-white/10 p-6 rounded-xl text-center mb-6">
+                        <p class="text-lg text-slate-300">Point Estimate</p>
+                        <p class="text-5xl font-bold text-amber-400 my-2">€<span id="point-estimate">12,500</span></p>
+                        <p class="text-slate-300">Range: €<span id="price-range">11,200 – 14,100</span> (P10-P90)</p>
+                    </div>
+                    <div class="mb-6">
+                        <h4 class="font-semibold text-slate-200 mb-3">Top Cost Drivers</h4>
+                        <div id="driver-chips-container" class="flex flex-wrap gap-2"></div>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-slate-200 mb-3">Similar Past Jobs</h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm"><thead class="text-slate-400"><tr><th class="p-2">Job Name</th><th class="p-2">Date</th><th class="p-2">Final Price</th></tr></thead><tbody id="similar-jobs-table" class="divide-y divide-white/10"></tbody></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How it works -->
+        <section id="how-it-works" class="mb-16 md:mb-24 max-w-5xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2">How The Analytics Engine Works</h2>
+            <p class="text-lg text-slate-600 mb-12">The system uses a three-layer modeling approach to ensure accurate, transparent, and reliable price recommendations.</p>
+            <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+                <div class="bg-white p-4 rounded-lg border border-slate-200 text-center"><p class="font-semibold text-slate-900">1. Baseline Calculation</p><p class="text-sm text-slate-600">Unit Costs × Quantities</p></div>
+                <div class="flow-diagram-arrow text-2xl font-light transform md:-rotate-90">→</div>
+                <div class="bg-white p-4 rounded-lg border border-slate-200 text-center"><p class="font-semibold text-slate-900">2. Similarity Matching</p><p class="text-sm text-slate-600">Finds Similar Past Jobs (KNN)</p></div>
+                <div class="flow-diagram-arrow text-2xl font-light transform md:-rotate-90">→</div>
+                <div class="bg-white p-4 rounded-lg border border-slate-200 text-center"><p class="font-semibold text-slate-900">3. Price Adjustment</p><p class="text-sm text-slate-600">ML Model Refines Price</p></div>
+                <div class="flow-diagram-arrow text-2xl font-light transform md:-rotate-90">→</div>
+                <div class="bg-slate-800 text-white p-4 rounded-lg border border-slate-200 text-center"><p class="font-semibold">Final Quote</p><p class="text-sm text-slate-300">Range + Point Estimate</p></div>
+            </div>
+        </section>
+        
+        <!-- ROI Calculator Section -->
+        <section id="roi-calculator" class="mb-16 md:mb-24 bg-white rounded-2xl p-8 md:p-12 border border-slate-200">
+            <div class="text-center max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Estimate the Financial Impact</h2>
+                <p class="text-lg text-slate-600 mb-12">This tool provides value in three key ways. Adjust the assumptions below based on your business data to project the potential annual return on investment.</p>
+            </div>
+
+            <!-- ROI Inputs -->
+            <div class="grid lg:grid-cols-3 gap-8 mb-12 p-6 bg-slate-50 rounded-xl border border-slate-200">
+                <div>
+                    <label for="quotes-per-year" class="block font-medium text-slate-700">Quotes per Year</label>
+                    <input id="quotes-per-year" type="number" value="300" class="mt-1 w-full p-2 border border-slate-300 rounded-md">
+                </div>
+                <div>
+                    <label for="avg-deal-value" class="block font-medium text-slate-700">Avg. Deal Value (€)</label>
+                    <input id="avg-deal-value" type="number" value="15000" class="mt-1 w-full p-2 border border-slate-300 rounded-md">
+                </div>
+                <div>
+                    <label for="current-margin" class="block font-medium text-slate-700">Current Avg. Margin (%)</label>
+                    <input id="current-margin" type="number" value="22" class="mt-1 w-full p-2 border border-slate-300 rounded-md">
+                </div>
+            </div>
+
+            <!-- ROI Outputs -->
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Lever A -->
+                <div class="roi-card bg-white p-6 rounded-xl border border-slate-200">
+                    <h4 class="font-bold text-slate-900 mb-2">A. Faster Quotes → Higher Win Rate</h4>
+                    <p class="text-sm text-slate-600 mb-4">Responding faster than competitors converts more quotes into deals.</p>
+                    <label class="text-sm font-medium">Expected Win Rate Increase</label>
+                    <div class="flex items-center gap-2">
+                        <input id="win-rate-increase" type="range" min="0" max="10" value="5" step="0.5" class="w-full">
+                        <span class="font-semibold text-slate-800 w-16 text-right">+<span id="win-rate-increase-label">5.0</span>%</span>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-200">
+                        <p class="text-sm text-slate-600">Additional Annual Margin</p>
+                        <p class="text-2xl font-semibold text-green-600">€<span id="roi-lever-a">49,500</span></p>
+                    </div>
+                </div>
+                <!-- Lever B -->
+                <div class="roi-card bg-white p-6 rounded-xl border border-slate-200">
+                    <h4 class="font-bold text-slate-900 mb-2">B. Margin Improvement</h4>
+                    <p class="text-sm text-slate-600 mb-4">Data-driven pricing reduces margin leakage from underpriced jobs.</p>
+                    <label class="text-sm font-medium">Expected Margin Point Increase</label>
+                    <div class="flex items-center gap-2">
+                        <input id="margin-increase" type="range" min="0" max="5" value="2" step="0.25" class="w-full">
+                        <span class="font-semibold text-slate-800 w-16 text-right">+<span id="margin-increase-label">2.0</span>%</span>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-200">
+                        <p class="text-sm text-slate-600">Additional Annual Margin</p>
+                        <p class="text-2xl font-semibold text-green-600">€<span id="roi-lever-b">31,500</span></p>
+                    </div>
+                </div>
+                <!-- Lever C -->
+                <div class="roi-card bg-white p-6 rounded-xl border border-slate-200">
+                    <h4 class="font-bold text-slate-900 mb-2">C. Reduced Overpricing Loss</h4>
+                    <p class="text-sm text-slate-600 mb-4">More competitive pricing helps win back deals that would have been lost.</p>
+                    <label class="text-sm font-medium">Deals Recovered per Year</label>
+                    <div class="flex items-center gap-2">
+                        <input id="deals-recovered" type="range" min="0" max="20" value="5" step="1" class="w-full">
+                        <span class="font-semibold text-slate-800 w-16 text-right"><span id="deals-recovered-label">5</span> deals</span>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-200">
+                        <p class="text-sm text-slate-600">Additional Annual Margin</p>
+                        <p class="text-2xl font-semibold text-green-600">€<span id="roi-lever-c">16,500</span></p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Total ROI -->
+            <div class="mt-12 bg-slate-800 text-white p-8 rounded-2xl text-center">
+                <p class="text-xl text-amber-400 font-semibold">Total Estimated Annual Margin Impact</p>
+                <p class="text-6xl font-bold my-4">€<span id="total-roi">97,500</span></p>
+                <div class="flex justify-center gap-8 text-slate-300">
+                    <div>Payback Period: <strong class="text-white">~3 Weeks</strong></div>
+                    <div>Annualized ROI: <strong class="text-white">1,700%+</strong></div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Benefits & KPIs -->
+        <section id="benefits" class="max-w-5xl mx-auto">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Benefits & Measuring Success</h2>
+                <p class="text-lg text-slate-600 mb-12">This tool will deliver significant improvements across the sales cycle, measured by clear, objective KPIs.</p>
+            </div>
+             <div class="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
+                <div class="space-y-4">
+                    <div class="flex items-start"><span class="text-green-500 mr-3 text-2xl">✔</span><div><h4 class="font-semibold text-slate-900">Consistency</h4><p class="text-slate-600">Data-driven pricing eliminates guesswork and standardizes quotes across the team.</p></div></div>
+                    <div class="flex items-start"><span class="text-green-500 mr-3 text-2xl">✔</span><div><h4 class="font-semibold text-slate-900">Speed</h4><p class="text-slate-600">Drastically reduces quote generation time, allowing faster client responses.</p></div></div>
+                    <div class="flex items-start"><span class="text-green-500 mr-3 text-2xl">✔</span><div><h4 class="font-semibold text-slate-900">Transparency</h4><p class="text-slate-600">The "why" behind every price is clearly explained with cost drivers and similar jobs.</p></div></div>
+                    <div class="flex items-start"><span class="text-green-500 mr-3 text-2xl">✔</span><div><h4 class="font-semibold text-slate-900">Improved Margins</h4><p class="text-slate-600">Ensures better alignment between quotes, market conditions, and financial targets.</p></div></div>
+                </div>
+                <div class="kpi-bar-chart-container">
+                    <canvas id="kpiChart"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Interactive Demo Elements
+            const materialSelect = document.getElementById('material-select');
+            const terrainSelect = document.getElementById('terrain-select');
+            const surfaceAreaInput = document.getElementById('surface-area');
+            const pointEstimateEl = document.getElementById('point-estimate');
+            const priceRangeEl = document.getElementById('price-range');
+            const driverChipsContainer = document.getElementById('driver-chips-container');
+            const similarJobsTable = document.getElementById('similar-jobs-table');
+
+            // ROI Calculator Elements
+            const quotesPerYearInput = document.getElementById('quotes-per-year');
+            const avgDealValueInput = document.getElementById('avg-deal-value');
+            const currentMarginInput = document.getElementById('current-margin');
+            const winRateIncreaseSlider = document.getElementById('win-rate-increase');
+            const winRateIncreaseLabel = document.getElementById('win-rate-increase-label');
+            const marginIncreaseSlider = document.getElementById('margin-increase');
+            const marginIncreaseLabel = document.getElementById('margin-increase-label');
+            const dealsRecoveredSlider = document.getElementById('deals-recovered');
+            const dealsRecoveredLabel = document.getElementById('deals-recovered-label');
+            const roiLeverAEl = document.getElementById('roi-lever-a');
+            const roiLeverBEl = document.getElementById('roi-lever-b');
+            const roiLeverCEl = document.getElementById('roi-lever-c');
+            const totalRoiEl = document.getElementById('total-roi');
+
+            // KPI Chart
+            const kpiCtx = document.getElementById('kpiChart').getContext('2d');
+
+            const baseData = {
+                price: 125, // price per m²
+                materialMultiplier: { standard: 1, premium: 1.5 },
+                terrainMultiplier: { easy: 1, difficult: 1.25 },
+            };
+
+            function updateQuote() {
+                const material = materialSelect.value;
+                const terrain = terrainSelect.value;
+                const surface = parseFloat(surfaceAreaInput.value) || 100;
+
+                const materialMulti = baseData.materialMultiplier[material];
+                const terrainMulti = baseData.terrainMultiplier[terrain];
+                
+                const calculatedPrice = baseData.price * surface * materialMulti * terrainMulti;
+                
+                const p50 = Math.round(calculatedPrice);
+                const p10 = Math.round(p50 * 0.9);
+                const p90 = Math.round(p50 * 1.12);
+
+                pointEstimateEl.textContent = p50.toLocaleString('it-IT');
+                priceRangeEl.textContent = `${p10.toLocaleString('it-IT')} – ${p90.toLocaleString('it-IT')}`;
+
+                driverChipsContainer.innerHTML = `
+                    <span class="driver-chip bg-amber-500/20 text-amber-300 text-sm font-medium px-3 py-1 rounded-full">Surface Area: ${surface} m²</span>
+                    <span class="driver-chip bg-sky-500/20 text-sky-300 text-sm font-medium px-3 py-1 rounded-full">Material: ${material.charAt(0).toUpperCase() + material.slice(1)}</span>
+                    <span class="driver-chip bg-green-500/20 text-green-300 text-sm font-medium px-3 py-1 rounded-full">Terrain: ${terrain.charAt(0).toUpperCase() + terrain.slice(1)}</span>`;
+
+                const jobPrice1 = Math.round(p50 * 0.98).toLocaleString('it-IT');
+                const jobPrice2 = Math.round(p50 * 1.02).toLocaleString('it-IT');
+                const jobPrice3 = Math.round(p50 * 0.96).toLocaleString('it-IT');
+                similarJobsTable.innerHTML = `
+                    <tr><td class="p-2">Job #8124</td><td class="p-2">May 2025</td><td class="p-2">€${jobPrice1}</td></tr>
+                    <tr><td class="p-2">Job #7981</td><td class="p-2">Mar 2025</td><td class="p-2">€${jobPrice2}</td></tr>
+                    <tr><td class="p-2">Job #8055</td><td class="p-2">Apr 2025</td><td class="p-2">€${jobPrice3}</td></tr>`;
+            }
+            
+            function calculateROI() {
+                const quotesYear = parseFloat(quotesPerYearInput.value) || 0;
+                const dealValue = parseFloat(avgDealValueInput.value) || 0;
+                const currentMargin = (parseFloat(currentMarginInput.value) || 0) / 100;
+                
+                const winRateIncrease = parseFloat(winRateIncreaseSlider.value) / 100;
+                const marginIncrease = parseFloat(marginIncreaseSlider.value) / 100;
+                const dealsRecovered = parseFloat(dealsRecoveredSlider.value) || 0;
+
+                winRateIncreaseLabel.textContent = (winRateIncrease * 100).toFixed(1);
+                marginIncreaseLabel.textContent = (marginIncrease * 100).toFixed(1);
+                dealsRecoveredLabel.textContent = dealsRecovered;
+
+                // Lever A
+                const additionalDeals = quotesYear * winRateIncrease;
+                const leverA = additionalDeals * dealValue * currentMargin;
+                
+                // Lever B (assuming it applies to all deals, not just newly won ones for simplicity)
+                // A more accurate model would need current win rate, but this is a good estimation
+                const currentWonDeals = quotesYear * 0.35; // Using 35% as a baseline from notes
+                const leverB = currentWonDeals * dealValue * marginIncrease;
+
+                // Lever C
+                const leverC = dealsRecovered * dealValue * currentMargin;
+
+                const total = leverA + leverB + leverC;
+
+                roiLeverAEl.textContent = leverA.toLocaleString('it-IT', {maximumFractionDigits: 0});
+                roiLeverBEl.textContent = leverB.toLocaleString('it-IT', {maximumFractionDigits: 0});
+                roiLeverCEl.textContent = leverC.toLocaleString('it-IT', {maximumFractionDigits: 0});
+                totalRoiEl.textContent = total.toLocaleString('it-IT', {maximumFractionDigits: 0});
+            }
+
+            [materialSelect, terrainSelect, surfaceAreaInput].forEach(el => el.addEventListener('input', updateQuote));
+            [quotesPerYearInput, avgDealValueInput, currentMarginInput, winRateIncreaseSlider, marginIncreaseSlider, dealsRecoveredSlider].forEach(el => el.addEventListener('input', calculateROI));
+            
+            updateQuote();
+            calculateROI();
+
+            new Chart(kpiCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Quote Cycle Time', 'Win Rate', 'Margin Accuracy', 'User Adoption'],
+                    datasets: [{
+                        label: 'Target Improvement',
+                        data: [50, 15, 80, 90],
+                        backgroundColor: ['rgba(59, 130, 246, 0.6)','rgba(16, 185, 129, 0.6)','rgba(245, 158, 11, 0.6)','rgba(107, 114, 128, 0.6)'],
+                        borderColor: ['rgba(59, 130, 246, 1)','rgba(16, 185, 129, 1)','rgba(245, 158, 11, 1)','rgba(107, 114, 128, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'Key Performance Indicators (Targets)', color: '#1e293b', font: {size: 16} }
+                    },
+                    scales: { x: { beginAtZero: true, max: 100, ticks: { callback: (value) => value + '%' } } }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
